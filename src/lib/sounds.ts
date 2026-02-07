@@ -12,7 +12,7 @@ let audioUnlocked = false;
 const COIN_SRC = '/sounds/coin.mp3';
 const WHOOSH_SRC = '/sounds/whoosh.mp3';
 
-/** Desbloqueia os áudios no primeiro toque (obrigatório em iOS/mobile). */
+/** Desbloqueia os áudios no primeiro toque (obrigatório em iOS/mobile). Toca em volume 0 para não ouvir na entrada. */
 function unlockAudio(): void {
   if (audioUnlocked) return;
   audioUnlocked = true;
@@ -21,9 +21,17 @@ function unlockAudio(): void {
     const whoosh = document.getElementById('sound-whoosh') as HTMLAudioElement | null;
     const playThenPause = (el: HTMLAudioElement | null) => {
       if (!el?.src) return;
+      const prevVolume = el.volume;
+      el.volume = 0;
       const p = el.play();
       if (p?.then) {
-        p.then(() => { el.pause(); el.currentTime = 0; }).catch(() => {});
+        p.then(() => {
+          el.pause();
+          el.currentTime = 0;
+          el.volume = prevVolume;
+        }).catch(() => {});
+      } else {
+        el.volume = prevVolume;
       }
     };
     playThenPause(coin);

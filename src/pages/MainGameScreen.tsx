@@ -41,10 +41,11 @@ export default function MainGameScreen() {
 
   useRoomRealtime(room?.id);
 
-  // Ao entrar na tela do jogo, atualiza dados (evita ter que sair e entrar na sala)
+  // Ao entrar na partida, atualiza dados e mantém valores em tempo real (refresh inicial + realtime)
   useEffect(() => {
-    if (room?.id) refreshRoomAndTransactions();
-  }, [room?.id]);
+    if (!room?.id) return;
+    refreshRoomAndTransactions();
+  }, [room?.id, refreshRoomAndTransactions]);
 
   // Manter tela acesa enquanto estiver em jogo (Wake Lock API - mobile)
   useEffect(() => {
@@ -162,12 +163,15 @@ export default function MainGameScreen() {
     }
   };
 
+  const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/rooms?code=${room?.code ?? ''}`;
+
   const handleShare = async () => {
     if (navigator.share) {
       try {
         await navigator.share({
           title: room.name,
-          text: `Entre na minha sala do Banco Divertido com o código: ${room.code}`,
+          text: `Entre na minha sala do Banco Divertido: ${room.code}`,
+          url: shareUrl,
         });
         toast.success('Compartilhado!');
       } catch (err) {
@@ -176,7 +180,14 @@ export default function MainGameScreen() {
         }
       }
     } else {
-      handleCopyCode();
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+        toast.success('Link copiado!');
+      } catch {
+        handleCopyCode();
+      }
     }
   };
 

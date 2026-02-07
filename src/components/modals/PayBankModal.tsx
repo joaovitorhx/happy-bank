@@ -88,7 +88,7 @@ export function PayBankModal({ isOpen, onClose, currentPlayer }: PayBankModalPro
               </span>
             </div>
 
-            <NumericKeypad value={amount} onChange={setAmount} />
+            <NumericKeypad value={amount} onChange={setAmount} compact className="space-y-2 sm:space-y-3" />
 
             {/* Note Presets */}
             <div>

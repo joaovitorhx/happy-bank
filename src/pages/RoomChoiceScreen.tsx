@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { GameButton } from '@/components/game/GameButton';
 import { BottomSheet } from '@/components/game/BottomSheet';
@@ -17,6 +17,7 @@ function profileToAvatar(avatarUrl: string | null): string {
 
 export default function RoomChoiceScreen() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { createRoom, joinRoom, currentPlayer, setCurrentPlayerFromProfile } = useGameStore();
 
   useEffect(() => {
@@ -38,7 +39,17 @@ export default function RoomChoiceScreen() {
   const [roomName, setRoomName] = useState('');
   const [initialMoney, setInitialMoney] = useState('15000');
   const [maxPlayers, setMaxPlayers] = useState('8');
-  const [roomCode, setRoomCode] = useState('');
+  const codeFromUrl = searchParams.get('code')?.trim().toUpperCase().slice(0, 6) ?? '';
+  const [roomCode, setRoomCode] = useState(codeFromUrl);
+
+  // Preencher código da URL e abrir modal de entrar quando vier link direto (?code=XXX)
+  useEffect(() => {
+    if (codeFromUrl.length === 6) {
+      setRoomCode(codeFromUrl);
+      setShowJoinModal(true);
+      setSearchParams({}, { replace: true });
+    }
+  }, [codeFromUrl, setSearchParams]);
 
   const handleCreateRoom = async (e: React.FormEvent) => {
     e.preventDefault();

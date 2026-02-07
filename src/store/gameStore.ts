@@ -40,6 +40,8 @@ interface GameStore extends GameState {
   toggleBankMode: () => void;
   /** 'in' = dinheiro entrando (mola), 'out' = saindo; usado para animação no BalanceCard. */
   lastBalancePulse: 'in' | 'out' | null;
+  /** IDs de transações P2P recebidas que já tocaram som (evita som duplicado). */
+  playedReceiveSoundTxIds: string[];
 }
 
 const PULSE_CLEAR_MS = 700;
@@ -50,6 +52,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   transactions: [],
   bankModeEnabled: false,
   lastBalancePulse: null,
+  playedReceiveSoundTxIds: [],
 
   setProfile: async (name, avatar) => {
     if (isSupabaseConfigured()) {
@@ -180,7 +183,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   leaveRoom: () => {
     clearStoredRoomCode();
-    set({ room: null, transactions: [] });
+    set({ room: null, transactions: [], playedReceiveSoundTxIds: [] });
   },
 
   startGame: async () => {
@@ -220,11 +223,25 @@ export const useGameStore = create<GameStore>((set, get) => ({
       const prevBalance = prevMe?.balance ?? 0;
       const newBalance = me?.balance ?? 0;
       const pulse = newBalance > prevBalance ? 'in' : newBalance < prevBalance ? 'out' : null;
-      set({ room: data.room, currentPlayer: me ?? get().currentPlayer, transactions: txList, lastBalancePulse: pulse });
-      // coin.mp3 só toca quando o usuário recebe transferência P2P (não banco)
-      const latestTx = txList[0];
-      const isP2PReceived = latestTx?.type === 'player-to-player' && latestTx?.toId === uid;
-      if (newBalance > prevBalance && isP2PReceived) playReceiveSound();
+      const playedIds = get().playedReceiveSoundTxIds;
+      const maxPlayedIds = 200;
+      // Toca som de recebimento uma vez por transação P2P que o usuário recebeu
+      const receivedP2p = txList.filter((tx) => tx.type === 'player-to-player' && tx.toId === uid);
+      let newPlayedIds = [...playedIds];
+      for (const tx of receivedP2p) {
+        if (!newPlayedIds.includes(tx.id)) {
+          playReceiveSound();
+          newPlayedIds = [...newPlayedIds, tx.id];
+          if (newPlayedIds.length > maxPlayedIds) newPlayedIds = newPlayedIds.slice(-maxPlayedIds);
+        }
+      }
+      set({
+        room: data.room,
+        currentPlayer: me ?? get().currentPlayer,
+        transactions: txList,
+        lastBalancePulse: pulse,
+        playedReceiveSoundTxIds: newPlayedIds,
+      });
       if (pulse) setTimeout(() => set({ lastBalancePulse: null }), PULSE_CLEAR_MS);
     }
   },
