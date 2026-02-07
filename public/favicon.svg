@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <circle cx="32" cy="32" r="30" fill="url(#a)" stroke="#d4a853" stroke-width="3"/>
+  <circle cx="32" cy="32" r="24" fill="#f5e6c8" stroke="#c9a227" stroke-width="1.5"/>
+  <text x="32" y="38" text-anchor="middle" font-size="24" font-weight="bold" fill="#8b6914">R$</text>
+  <defs>
+    <linearGradient id="a" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e8c547"/>
+      <stop offset="1" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+</svg>

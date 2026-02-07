@@ -1,0 +1,378 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Board Game Banking Design System - Monopoly/Banco Imobiliário Inspired */
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap');
+
+@layer base {
+  :root {
+    /* Board Game Color Palette */
+    --background: 42 35% 95%;
+    --foreground: 25 30% 15%;
+
+    --card: 42 40% 98%;
+    --card-foreground: 25 30% 15%;
+
+    --popover: 42 40% 98%;
+    --popover-foreground: 25 30% 15%;
+
+    /* Rich Monopoly Green */
+    --primary: 152 55% 32%;
+    --primary-foreground: 42 40% 98%;
+
+    /* Warm Gold */
+    --secondary: 38 85% 55%;
+    --secondary-foreground: 25 30% 15%;
+
+    /* Cream/Parchment */
+    --muted: 42 30% 88%;
+    --muted-foreground: 25 20% 40%;
+
+    /* Deep Red Accent */
+    --accent: 0 65% 50%;
+    --accent-foreground: 42 40% 98%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 42 40% 98%;
+
+    /* Warm Brown Border */
+    --border: 25 25% 75%;
+    --input: 42 30% 88%;
+    --ring: 152 55% 32%;
+
+    --radius: 1rem;
+
+    /* Game-specific tokens */
+    --game-shadow: 0 6px 0 hsl(25 30% 20% / 0.3);
+    --game-shadow-sm: 0 3px 0 hsl(25 30% 20% / 0.25);
+    --game-shadow-lg: 0 10px 0 hsl(25 30% 20% / 0.35);
+    --game-shadow-pressed: 0 2px 0 hsl(25 30% 20% / 0.3);
+
+    /* Gradients */
+    --gradient-gold: linear-gradient(145deg, hsl(45 90% 60%), hsl(38 85% 50%));
+    --gradient-green: linear-gradient(145deg, hsl(152 50% 40%), hsl(152 55% 28%));
+    --gradient-red: linear-gradient(145deg, hsl(0 60% 55%), hsl(0 65% 45%));
+    --gradient-cream: linear-gradient(180deg, hsl(42 40% 98%), hsl(42 35% 92%));
+    --gradient-money: linear-gradient(135deg, hsl(152 55% 35%), hsl(145 60% 25%));
+
+    /* Typography */
+    --font-display: 'Fredoka', sans-serif;
+    --font-body: 'Nunito', sans-serif;
+
+    /* Bank colors */
+    --bank: 220 60% 50%;
+    --bank-foreground: 42 40% 98%;
+
+    /* Player highlight */
+    --highlight: 45 100% 65%;
+
+    /* Success state */
+    --success: 152 55% 40%;
+    --success-foreground: 42 40% 98%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 25 25% 10%;
+    --foreground: 42 40% 95%;
+
+    --card: 25 25% 15%;
+    --card-foreground: 42 40% 95%;
+
+    --popover: 25 25% 15%;
+    --popover-foreground: 42 40% 95%;
+
+    --primary: 152 50% 45%;
+    --primary-foreground: 25 30% 10%;
+
+    --secondary: 38 80% 50%;
+    --secondary-foreground: 25 30% 10%;
+
+    --muted: 25 20% 20%;
+    --muted-foreground: 42 20% 65%;
+
+    --accent: 0 60% 55%;
+    --accent-foreground: 42 40% 98%;
+
+    --destructive: 0 65% 50%;
+    --destructive-foreground: 42 40% 98%;
+
+    --border: 25 20% 25%;
+    --input: 25 20% 20%;
+    --ring: 152 50% 45%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body;
+    font-family: var(--font-body);
+    background-image: 
+      radial-gradient(ellipse at 50% 0%, hsl(42 40% 92% / 0.8) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4c4a8' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    @apply font-bold;
+  }
+}
+
+@layer components {
+  /* Game Button Base */
+  .game-btn {
+    @apply relative font-display font-bold text-lg px-6 py-4 rounded-2xl transition-all duration-150 active:translate-y-1;
+    box-shadow: var(--game-shadow);
+  }
+
+  .game-btn:active {
+    box-shadow: var(--game-shadow-pressed);
+  }
+
+  .game-btn-primary {
+    @apply game-btn text-primary-foreground;
+    background: var(--gradient-green);
+  }
+
+  .game-btn-secondary {
+    @apply game-btn text-secondary-foreground;
+    background: var(--gradient-gold);
+  }
+
+  .game-btn-accent {
+    @apply game-btn text-accent-foreground;
+    background: var(--gradient-red);
+  }
+
+  .game-btn-outline {
+    @apply game-btn bg-card text-foreground border-4 border-border;
+  }
+
+  /* Game Card */
+  .game-card {
+    @apply bg-card rounded-3xl p-5 border-4 border-border;
+    box-shadow: var(--game-shadow);
+    background: var(--gradient-cream);
+  }
+
+  /* Balance Display */
+  .balance-display {
+    @apply font-display text-4xl font-bold tracking-tight;
+  }
+
+  /* Money Chip */
+  .money-chip {
+    @apply px-4 py-2 rounded-xl font-display font-semibold text-sm border-2 border-border transition-all;
+    box-shadow: var(--game-shadow-sm);
+  }
+
+  .money-chip:active {
+    @apply translate-y-0.5;
+    box-shadow: var(--game-shadow-pressed);
+  }
+
+  /* Player Avatar */
+  .player-avatar {
+    @apply w-14 h-14 rounded-full border-4 border-secondary flex items-center justify-center text-2xl;
+    box-shadow: var(--game-shadow-sm);
+    background: var(--gradient-cream);
+  }
+
+  /* Transaction Item */
+  .transaction-item {
+    @apply flex items-center gap-3 p-4 rounded-2xl bg-card/80 border-2 border-border/50;
+  }
+
+  /* Numeric Keypad Button */
+  .keypad-btn {
+    @apply aspect-square rounded-2xl font-display text-2xl font-bold flex items-center justify-center transition-all active:scale-95;
+    box-shadow: var(--game-shadow-sm);
+  }
+
+  .keypad-btn:active {
+    box-shadow: none;
+    @apply translate-y-0.5;
+  }
+
+  /* Teclado compacto: ocupa toda a largura em baixo, botões preenchem sem sobra nas laterais */
+  .keypad-compact .balance-display {
+    @apply text-xl font-bold;
+  }
+  .keypad-compact .money-chip {
+    @apply px-2 py-1 text-xs rounded-lg;
+  }
+  .keypad-compact .keypad-grid-wrap {
+    width: calc(100% + 2rem);
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+  @media (min-width: 640px) {
+    .keypad-compact .keypad-grid-wrap {
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+  .keypad-compact .keypad-btn {
+    @apply rounded-xl text-base font-bold w-full min-h-0 flex items-center justify-center;
+    min-height: 2.5rem;
+    max-height: 3rem;
+    aspect-ratio: unset;
+  }
+  .keypad-compact .keypad-btn svg {
+    @apply w-4 h-4;
+  }
+  .keypad-compact .game-card {
+    @apply py-2;
+  }
+
+  /* Bottom Sheet: responsivo e safe-area */
+  .bottom-sheet {
+    @apply fixed inset-x-0 bottom-0 bg-card rounded-t-3xl border-t-4 border-x-4 border-border z-50;
+    padding: 0.75rem 1rem 1.5rem;
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+    box-shadow: 0 -8px 30px hsl(25 30% 20% / 0.2);
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .bottom-sheet-content {
+    @apply overflow-y-auto overflow-x-hidden;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0 0.25rem;
+  }
+  @media (min-width: 640px) {
+    .bottom-sheet {
+      @apply left-1/2 -translate-x-1/2 rounded-3xl border-4 p-6;
+      max-width: 28rem;
+      bottom: 1.5rem;
+      max-height: 85vh;
+    }
+  }
+
+  /* Filter Pill */
+  .filter-pill {
+    @apply px-4 py-2 rounded-full font-display text-sm font-semibold transition-all;
+  }
+
+  .filter-pill-active {
+    @apply filter-pill bg-primary text-primary-foreground;
+    box-shadow: var(--game-shadow-sm);
+  }
+
+  .filter-pill-inactive {
+    @apply filter-pill bg-muted text-muted-foreground;
+  }
+
+  /* Leaderboard Item */
+  .leaderboard-item {
+    @apply flex items-center gap-3 p-3 rounded-xl transition-colors;
+  }
+
+  .leaderboard-item-me {
+    @apply leaderboard-item bg-secondary/20 border-2 border-secondary;
+  }
+
+  /* QR Code Container */
+  .qr-container {
+    @apply aspect-square rounded-2xl bg-white border-4 border-border flex items-center justify-center;
+    box-shadow: var(--game-shadow);
+  }
+
+  /* Room Code Display */
+  .room-code {
+    @apply font-display text-3xl font-bold tracking-[0.3em] text-primary;
+  }
+
+  /* Section Header */
+  .section-header {
+    @apply font-display text-lg font-bold text-foreground flex items-center gap-2 mb-3;
+  }
+}
+
+@layer utilities {
+  /* Animations */
+  @keyframes bounce-in {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes slide-up {
+    0% { transform: translateY(100%); }
+    100% { transform: translateY(0); }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px hsl(38 85% 55% / 0.3); }
+    50% { box-shadow: 0 0 40px hsl(38 85% 55% / 0.5); }
+  }
+
+  @keyframes coin-flip {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(360deg); }
+  }
+
+  /* Money fly: saída (enviar) e entrada (receber) */
+  @keyframes money-fly-out {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.9; }
+    100% { transform: scale(0.6); opacity: 0; }
+  }
+  @keyframes money-fly-in {
+    0% { transform: scale(0.6); opacity: 0; }
+    50% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .animate-money-fly-out {
+    animation: money-fly-out 0.35s ease-in forwards;
+  }
+  .animate-money-fly-in {
+    animation: money-fly-in 0.4s ease-out forwards;
+  }
+
+  .animate-bounce-in {
+    animation: bounce-in 0.4s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.3s ease-out forwards;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .animate-coin-flip {
+    animation: coin-flip 0.6s ease-in-out;
+  }
+
+  /* Text shadow for game feel */
+  .text-shadow-game {
+    text-shadow: 2px 2px 0 hsl(25 30% 20% / 0.2);
+  }
+}
