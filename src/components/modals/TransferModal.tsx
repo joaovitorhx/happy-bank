@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { BottomSheet } from '@/components/game/BottomSheet';
@@ -35,9 +35,14 @@ export function TransferModal({ isOpen, onClose, players, currentPlayer, initial
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
   const [loading, setLoading] = useState(false);
+  const wasOpenRef = useRef(false);
 
+  // Só aplica preselect ou reset quando o modal abre; não reseta quando realtime atualiza players
   React.useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      wasOpenRef.current = false;
+      return;
+    }
     if (initialPreselect && players.length) {
       const player = players.find((p) => p.id === initialPreselect.playerId);
       if (player) {
@@ -45,13 +50,17 @@ export function TransferModal({ isOpen, onClose, players, currentPlayer, initial
         setAmount(initialPreselect.amount != null ? String(initialPreselect.amount) : '');
         setNote(initialPreselect.note ?? '');
         setStep(initialPreselect.amount != null && initialPreselect.amount > 0 ? 'confirm' : 'amount');
+        wasOpenRef.current = true;
+        return;
       }
-    } else {
+    }
+    if (!wasOpenRef.current) {
       setStep('select');
       setSelectedPlayer(null);
       setAmount('');
       setNote('');
     }
+    wasOpenRef.current = true;
   }, [isOpen, initialPreselect?.playerId, initialPreselect?.amount, initialPreselect?.note, players]);
 
   const handleClose = () => {
